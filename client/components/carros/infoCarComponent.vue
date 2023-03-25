@@ -2,17 +2,17 @@
     <div id="infoCarComponent">
         <v-dialog
             v-model="showDialog"
-            width="500">
-            <v-card>
+            width="500px">
+            <v-card class="pa-0 ma-0">
                 <v-card-title>Informações do Carro</v-card-title>
-                <v-card-text>Imagem:</v-card-text>
+                <v-card-text>Imagem: <v-img :src="carro.file_path"></v-img></v-card-text>
                 <v-card-text>Nome: {{carro.nome}}</v-card-text>
                 <v-card-text>Ano de Fabricação: {{carro.ano}}</v-card-text>
                 <v-card-actions>
 
                     <!--atualizar o valor da props showDialog para false
                     caso o usuario clique no botao e emitindo esse valor para o componente pai se atualizar com o novo valor dado-->
-                    <v-btn @click="fecharDialog()">
+                    <v-btn color="primary" @click="fecharDialog()">
                         Fechar
                     </v-btn>
                     </v-card-actions>
