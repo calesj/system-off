@@ -12,7 +12,7 @@
 
                     <!--atualizar o valor da props showDialog para false
                     caso o usuario clique no botao e emitindo esse valor para o componente pai se atualizar com o novo valor dado-->
-                    <v-btn color="primary" @click="$emit('update:show-dialog', false)">
+                    <v-btn color="primary" @click="fecharDialog()">
                         Fechar
                     </v-btn>
                     </v-card-actions>
@@ -25,15 +25,26 @@
 export default{
     name: 'infoMotoComponent',
 
-    //Definindo a props dinâmica que virá do componente pai 
+    //Definindo a props dinâmica que virá do componente pai
     props: {
         showDialog: {
             /*o valor que vier do componente pai, deve ser
             booleano e o valor padrão é falso*/
             type: Boolean,
             default: false,
-        }
+        },
+
+      moto: {
+          type: Object,
+          required: true
+      }
     },
+
+  methods: {
+      fecharDialog() {
+        this.$emit('fechar-dialog')
+      }
+  }
 }
 
 </script>
