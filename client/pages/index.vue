@@ -16,8 +16,9 @@
     <!-- passando o valor da variavel showDialog para a props showDialog do componente filho; -->
     <!-- passando o valor da variavel carroSelecionado para a props carro do componente filho -->
     <!-- só habilitará o componente, se existir um carroSelecionado -->
+    <!-- se por acaso o metodo fechar-dialogo dentro do componente for chamado, a variavel showDialogCarro passará a ser false -->
     <infoCarComponent v-if="carroSelecionado" ref="infoCarComponent" :show-dialog="showDialogCarro" :carro="carroSelecionado" @fechar-dialog="showDialogCarro = false"></infoCarComponent>
-    <infoMotoComponent v-if="motoSelecionada" ref="infoMotoComponent" :show-dialog="showDialogMoto" @fechar-dialog="showDialogMoto = false"></infoMotoComponent>
+    <infoMotoComponent v-if="motoSelecionada" ref="infoMotoComponent" :show-dialog="showDialogMoto" :moto="motoSelecionada" @fechar-dialog="showDialogMoto = false"></infoMotoComponent>
       <v-scroll-x-transition>
         <v-data-table
         v-show="tableCarros"
@@ -42,7 +43,7 @@
         :headers="headersMotos"
         :items="itemsMotos"
         hide-default-footer
-        ><template v-slot:item.info="{ item }">
+        ><template v-slot:item.id="{ item }">
         <v-chip color="orange"
         @click="motoDialog(item)">
           <v-icon>
@@ -81,15 +82,15 @@ import axios from 'axios'
 
         headersMotos: [{
           text: 'Motos',
-          value: 'moto'
+          value: 'nome'
         },
         {
         text: 'Informações',
-        value: 'info'
+        value: 'id'
         },
         {
           text: 'Ano',
-          value: 'year'
+          value: 'ano'
         }],
 
         itemsCarros: [],
@@ -109,17 +110,24 @@ import axios from 'axios'
 
     methods: {
       async carroData() {
-        const resposta = await this.$axios.get('/api/carro')
-        this.itemsCarros = resposta.data
+        const response = await this.$axios.get('/api/carro')
+        this.itemsCarros = response.data
       },
+
       async showCarros() {
         this.tableMotos = false
         await this.sleep(300)
         this.tableCarros = true
       },
 
-     async showMotos(){
+      async motoData() {
+        const response = await this.$axios.get('/api/moto')
+        this.itemsMotos = response.data
+      },
+
+      async showMotos(){
         this.tableCarros = false
+        await this.motoData()
         await this.sleep(300)
         this.tableMotos = true
       },
