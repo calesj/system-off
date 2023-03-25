@@ -14,10 +14,10 @@
     </v-app-bar>
     <!-- colocando ref no componente para acessar as referencias dele utilizando o $refs em algum método -->
     <!-- passando o valor da variavel showDialog para a props showDialog do componente filho; -->
-    <!-- o @update:show-dialog="updateDialog" está trazendo o valor que está no componente filho,
-    e atualizando esse valor no elemento pai-->
-    <infoCarComponent ref="infoCarComponent" :show-dialog="showDialogCarro" @update:show-dialog="updateDialogCarro"></infoCarComponent>
-    <infoMotoComponent ref="infoMotoComponent" :show-dialog="showDialogMoto" @update:show-dialog="updateDialogMoto"></infoMotoComponent>
+    <!-- passando o valor da variavel carroSelecionado para a props carro do componente filho -->
+    <!-- só habilitará o componente, se existir um carroSelecionado -->
+    <infoCarComponent v-if="carroSelecionado" ref="infoCarComponent" :show-dialog="showDialogCarro" :carro="carroSelecionado" @fechar-dialog="showDialogCarro = false"></infoCarComponent>
+    <infoMotoComponent v-if="motoSelecionada" ref="infoMotoComponent" :show-dialog="showDialogMoto" @fechar-dialog="showDialogMoto = false"></infoMotoComponent>
       <v-scroll-x-transition>
         <v-data-table
         v-show="tableCarros"
@@ -25,10 +25,10 @@
         :items="itemsCarros"
         hide-default-footer
         >
-        <template v-slot:item.info="{ item }">
+        <template v-slot:item.id="{ item }">
       <v-chip
         color="orange"
-        @click="carDialog()"
+        @click="carDialog(item)"
       >
         <v-icon>mdi-camera-outline</v-icon>
       </v-chip>
@@ -44,7 +44,7 @@
         hide-default-footer
         ><template v-slot:item.info="{ item }">
         <v-chip color="orange"
-        @click="motoDialog()">
+        @click="motoDialog(item)">
           <v-icon>
             mdi-camera-outline
           </v-icon>
@@ -57,6 +57,7 @@
 <script>
 import infoCarComponent from '~/components/carros/infoCarComponent.vue'
 import infoMotoComponent from '~/components/motos/infoMotoComponent.vue'
+import axios from 'axios'
   export default {
     components: {
       infoCarComponent,
@@ -64,18 +65,18 @@ import infoMotoComponent from '~/components/motos/infoMotoComponent.vue'
     },
     data () {
       return {
-        headersCarros: 
+        headersCarros:
         [{
           text: 'Carros',
-          value: 'car'
-        }, 
+          value: 'nome'
+        },
         {
           text: 'Informações',
-          value: 'info'
+          value: 'id'
         },
         {
           text: 'Ano',
-          value: 'year'
+          value: 'ano'
         }],
 
         headersMotos: [{
@@ -90,25 +91,27 @@ import infoMotoComponent from '~/components/motos/infoMotoComponent.vue'
           text: 'Ano',
           value: 'year'
         }],
-        
-        itemsCarros: [{
-          car: 'Opala 166',
-          info: 'salve',
-          year: 1996
-      }],
-        itemsMotos: [{
-          moto: 'Honda Twist',
-          info: 'salve',
-          year: 2002
-        }],
+
+        itemsCarros: [],
+        itemsMotos: [],
         tableCarros: true,
         tableMotos: false,
         showDialogCarro: false,
-        showDialogMoto: false
+        showDialogMoto: false,
+        carroSelecionado: null,
+        motoSelecionada: null
      }
     },
 
+    mounted() {
+      this.carroData();
+    },
+
     methods: {
+      async carroData() {
+        const resposta = await this.$axios.get('/api/carro')
+        this.itemsCarros = resposta.data
+      },
       async showCarros() {
         this.tableMotos = false
         await this.sleep(300)
@@ -121,20 +124,14 @@ import infoMotoComponent from '~/components/motos/infoMotoComponent.vue'
         this.tableMotos = true
       },
 
-      carDialog() {
+      carDialog(item) {
+        this.carroSelecionado = item
         this.showDialogCarro = true
       },
 
-      motoDialog() {
+      motoDialog(item) {
+        this.motoSelecionada = item
         this.showDialogMoto = true
-      },
-
-      updateDialogCarro(value) {
-        this.showDialogCarro = value
-      },
-
-      updateDialogMoto(value) {
-        this.showDialogMoto = value
       },
 
      sleep(ms) {
