@@ -13,6 +13,18 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$router->group(['prefix' => 'moto'], function () use ($router) {
+    $router->get('', 'MotoController@index');
+    $router->get('{id}', 'MotoController@show');
+    $router->post('', 'MotoController@store');
+    $router->put('{id}', 'MotoController@update');
+    $router->delete('{id}', 'MotoController@destroy');
+});
+
+$router->group(['prefix' => 'carro'], function () use ($router) {
+    $router->get('', 'CarroController@index');
+    $router->get('{id}', 'CarroController@show');
+    $router->post('', 'CarroController@store');
+    $router->put('{id}', 'CarroController@update');
+    $router->delete('{id}', 'CarroController@destroy');
 });
