@@ -5,14 +5,14 @@
             width="500">
             <v-card>
                 <v-card-title>Informações do Carro</v-card-title>
-                <v-card-text>Imagem: <v-img></v-img></v-card-text>
-                <v-card-text>Nome:</v-card-text>
-                <v-card-text>Ano de Fabricação:</v-card-text>
+                <v-card-text>Imagem:</v-card-text>
+                <v-card-text>Nome: {{carro.nome}}</v-card-text>
+                <v-card-text>Ano de Fabricação: {{carro.ano}}</v-card-text>
                 <v-card-actions>
 
                     <!--atualizar o valor da props showDialog para false
                     caso o usuario clique no botao e emitindo esse valor para o componente pai se atualizar com o novo valor dado-->
-                    <v-btn color="primary" @click="$emit('update:show-dialog', false)">
+                    <v-btn @click="fecharDialog()">
                         Fechar
                     </v-btn>
                     </v-card-actions>
@@ -22,18 +22,28 @@
 </template>
 
 <script>
-export default{
-    name: 'infoCarComponent',
+export default {
+  name: 'infoCarComponent',
 
-    //Definindo a props dinâmica que virá do componente pai 
-    props: {
-        showDialog: {
-            /*o valor que vier do componente pai, deve ser
+  //Definindo a props dinâmica que virá do componente pai
+  props: {
+    showDialog: {
+      /*o valor que vier do componente pai, deve ser
             booleano e o valor padrão é falso*/
-            type: Boolean,
-            default: false,
-        }
+      type: Boolean,
+      default: false,
     },
+
+    carro: {
+      type: Object,
+      required: true
+    }
+  },
+  methods: {
+    fecharDialog() {
+      this.$emit('fechar-dialog')
+    }
+  }
 }
 
 </script>
