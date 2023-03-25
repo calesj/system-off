@@ -2,12 +2,12 @@
     <div id="infoCarComponent">
         <v-dialog
             v-model="showDialog"
-            width="500">
-            <v-card>
+            width="500px">
+            <v-card class="pa-0 ma-0">
                 <v-card-title>Informações da Moto</v-card-title>
-                <v-card-text>Imagem: <v-img></v-img></v-card-text>
-                <v-card-text>Nome:</v-card-text>
-                <v-card-text>Ano de Fabricação:</v-card-text>
+                <v-card-text>Imagem: <v-img :src="moto.file_path"></v-img></v-card-text>
+                <v-card-text>Nome: {{moto.nome}}</v-card-text>
+                <v-card-text>Ano de Fabricação: {{moto.ano}}</v-card-text>
                 <v-card-actions>
 
                     <!--atualizar o valor da props showDialog para false
