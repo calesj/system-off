@@ -36,7 +36,7 @@ abstract class ControllerBase extends Controller
     {
         try {
             $model = $this->model::find($id);
-
+            $model->file_path = url(str_replace('/public/', '/',"storage/$model->file_path"));
             return response()->json($model);
         } catch (QueryException $e) {
             return response()->json(['message' => 'Desculpe, algo deu errado']);
