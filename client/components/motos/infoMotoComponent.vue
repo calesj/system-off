@@ -11,20 +11,23 @@
           ></v-skeleton-loader>
         </div>
         <div v-show="!loading">
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <!--atualizar o valor da props dialog para false
+            caso o usuario clique nesse botao, será emitido um evento ao elemento pai dizendo que o método closeDialog
+            foi acionado, dentro do elemento pai diz que caso esse método seja chamado, dialog será igual a false-->
+            <v-btn @click="closeDialog()" icon>
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-actions>
           <v-card-title>Informações da Moto</v-card-title>
-          <v-card-text><b>Imagem:</b>
+          <v-card-text>
+            <b>Imagem:</b>
             <v-img :src="moto.file_path"></v-img>
+            <b>Nome:</b> {{ moto.nome }} <br>
+            <b>Ano de Fabricação:</b> {{ moto.ano }}
           </v-card-text>
-          <v-card-text><b>Nome:</b> {{ moto.nome }}</v-card-text>
-          <v-card-text><b>Ano de Fabricação:</b> {{ moto.ano }}</v-card-text>
         </div>
-        <v-card-actions>
-          <!--atualizar o valor da props showDialog para false
-          caso o usuario clique no botao e emitindo esse valor para o componente pai se atualizar com o novo valor dado-->
-          <v-btn color="primary" @click="fecharDialog()">
-            Fechar
-          </v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
@@ -40,15 +43,20 @@ export default {
     }
   },
 
-  //Definindo a props dinâmica que virá do componente pai
+  // utilizamos props, para o componente pai poder manipular o valor dessa propriedade por fora
   props: {
+
+    // showDialog é a propriedade que representa o v-model do nosso componente, utilizamos props, para o componente pai
+    // poder manipular o valor dessa propriedade por fora
     showDialog: {
-      /*o valor que vier do componente pai, deve ser
-      booleano e o valor padrão é falso*/
+
+      // o valor que vier do componente pai, deve ser booleano e o valor padrão é falso
       type: Boolean,
       default: false,
     },
 
+    // moto é a propriedade que representa o objeto que será exibido dentro do nosso v-dialog, ele virá do componente pai
+    // para ser exibido dentro desse componente
     moto: {
       type: Object,
       required: true
@@ -56,14 +64,17 @@ export default {
   },
 
   mounted() {
+
+    // função de callback, nós enviamos uma função como parâmetro que representa o código que queremos congelar
+    // como segundo parâmetro enviamos a quantidade de tempo que queremos congelar o código em ms
     setTimeout(() => {
       this.loading = false
     }, 1000)
   },
 
   methods: {
-    fecharDialog() {
-      this.$emit('fechar-dialog')
+    closeDialog() {
+      this.$emit('close-dialog')
     }
   }
 }
