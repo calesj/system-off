@@ -2,16 +2,76 @@
   <v-col class="shrink">
     <v-app-bar app>
       <v-btn :elevation="0"
-             @click="showCarros"
       >
         Carros
       </v-btn>
       <v-btn :elevation="0"
-             @click="showMotos"
       >
         Motos
       </v-btn>
     </v-app-bar>
+    <template>
+      <v-card>
+        <v-sheet
+        >
+          <v-skeleton-loader
+            v-if="loading"
+            type="table-tbody"
+            width="100%"
+          ></v-skeleton-loader>
+        </v-sheet>
+      <div v-if="!loading">
+        <v-tabs
+          v-model="tab"
+          centered
+          background-color="transparent"
+        >
+          <v-tab
+          >
+            Carros
+          </v-tab>
+          <v-tab
+          >
+            Motos
+          </v-tab>
+          <v-tab-item>
+            <v-data-table
+              v-if="tableCarros"
+              :headers="headersCarros"
+              :items="itemsCarros"
+              hide-default-footer
+            >
+              <template v-slot:item.id="{ item }">
+                <v-chip
+                  color="orange"
+                  @click="carDialog(item)"
+                >
+                  <v-icon>mdi-camera-outline</v-icon>
+                </v-chip>
+              </template>
+            </v-data-table>
+          </v-tab-item>
+          <v-tab-item>
+            <v-data-table
+              v-if="tableMotos"
+              :headers="headersMotos"
+              :items="itemsMotos"
+              hide-default-footer
+            >
+              <template v-slot:item.id="{ item }">
+                <v-chip color="orange"
+                        @click="motoDialog(item)">
+                  <v-icon>
+                    mdi-camera-outline
+                  </v-icon>
+                </v-chip>
+              </template>
+            </v-data-table>
+          </v-tab-item>
+        </v-tabs>
+      </div>
+      </v-card>
+    </template>
     <!-- colocando ref no componente para acessar as referencias dele utilizando o $refs em algum método -->
     <!-- passando o valor da variavel showDialog para a props showDialog do componente filho; -->
     <!-- passando o valor da variavel carro para a props carro do componente filho -->
@@ -30,41 +90,6 @@
       :show-dialog="showDialogMoto"
       :moto="moto"
       @fechar-dialog="showDialogMoto = false"></infoMotoComponent>
-    <v-scroll-x-transition>
-      <v-data-table
-        v-if="tableCarros"
-        :headers="headersCarros"
-        :items="itemsCarros"
-        hide-default-footer
-      >
-        <template v-slot:item.id="{ item }">
-          <v-chip
-            color="orange"
-            @click="carDialog(item)"
-          >
-            <v-icon>mdi-camera-outline</v-icon>
-          </v-chip>
-        </template>
-      </v-data-table>
-    </v-scroll-x-transition>
-
-    <v-scroll-x-reverse-transition>
-      <v-data-table
-        v-if="tableMotos"
-        :headers="headersMotos"
-        :items="itemsMotos"
-        hide-default-footer
-      >
-        <template v-slot:item.id="{ item }">
-          <v-chip color="orange"
-                  @click="motoDialog(item)">
-            <v-icon>
-              mdi-camera-outline
-            </v-icon>
-          </v-chip>
-        </template>
-      </v-data-table>
-    </v-scroll-x-reverse-transition>
   </v-col>
 </template>
 <script>
@@ -80,6 +105,8 @@ export default {
   },
   data() {
     return {
+      tab: null,
+      loading: true,
       headersCarros:
         [{
           text: 'Carros',
@@ -110,7 +137,7 @@ export default {
       itemsCarros: [],
       itemsMotos: [],
       tableCarros: true,
-      tableMotos: false,
+      tableMotos: true,
       showDialogCarro: false,
       showDialogMoto: false,
       carro: null,
@@ -120,7 +147,11 @@ export default {
 
   mounted() {
     //carrega os dados de todos os carros na tela inicial assim que a tela é carregada
-    this.carroData();
+    this.carroData()
+    this.motoData()
+    setTimeout(() => {
+      this.loading = false
+    }, 500)
   },
 
   methods: {
@@ -130,25 +161,11 @@ export default {
       this.itemsCarros = response.data
     },
 
-    //mostra a tabela de carros
-    async showCarros() {
-      this.tableMotos = false
-      await this.sleep(300)
-      this.tableCarros = true
-    },
 
     //acessando a API e trazendo todas as motos do banco
     async motoData() {
       const response = await this.$axios.get('/api/moto')
       this.itemsMotos = response.data
-    },
-
-    //mostra a tabela de motos
-    async showMotos() {
-      this.tableCarros = false
-      await this.motoData()
-      await this.sleep(300)
-      this.tableMotos = true
     },
 
     //passa o id do item selecionado para a variavel carro
@@ -161,11 +178,6 @@ export default {
     motoDialog(item) {
       this.moto = item
       this.showDialogMoto = true
-    },
-
-    //metodo usado pra pausar o tempo de acordo o ms passado
-    sleep(ms) {
-      return new Promise(resolve => setTimeout(resolve, ms));
     },
   }
 }
