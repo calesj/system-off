@@ -19,7 +19,7 @@ abstract class ControllerBase extends Controller
         'file_path' => 'required|image'
     ];
 
-    public function index(Request $request)
+    public function index()
     {
         // o $this->model representa a classe que herdará esse ControllerBase
         try {
@@ -34,7 +34,7 @@ abstract class ControllerBase extends Controller
         }
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
         try {
             $model = $this->model::find($id);
@@ -89,37 +89,29 @@ abstract class ControllerBase extends Controller
         //criando um ponto de restauração
         DB::beginTransaction();
 
-        //validação dos inputs
-        $validation = FormValidation::validar($request->all(), $this->rules);
-
-        if ($validation !== true) {
-            return $validation;
-        }
-
         try {
+            //validação dos inputs
+            $validation = FormValidation::validar($request->all(), $this->rules);
+
+            if ($validation !== true) {
+                return $validation;
+            }
+            $model = $this->model::find($id);
+
             $nome = $request->get('nome');
             $ano = $request->get('ano');
 
             //verifica se existe um arquivo no $request cuja chave é 'file_path', se existir, salvará no caminho 'public'
             $file_path = $request->file('file_path')->store('public');
 
-            $model = $this->model::find($id);
-
-            //verificando se o objeto existe no banco
-            if (!$model) {
-                return response()->json(['errors' => 'recurso não encontrado', 404]);
-            }
-
             $model->nome = $nome;
             $model->ano = $ano;
             $model->file_path = $file_path;
 
             $model->save();
-
             //confirma a transação para o banco de dados
             DB::commit();
-
-            return response()->json(['message' => 'Oba, deu certo!'], 200);
+            return response()->json(['message' => 'Oba, deu certo!'], 201);
 
         } catch (QueryException $e) {
             //restaurará o banco de dados para o ponto de restauração criado antes dessa operação
@@ -129,7 +121,7 @@ abstract class ControllerBase extends Controller
         }
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
         //criando um ponto de restauração
         DB::beginTransaction();
