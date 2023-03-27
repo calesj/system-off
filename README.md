@@ -10,7 +10,7 @@ Projeto feito com o intuito de testar todos meus conhecimentos
 * MySql
 
 ## Informações adicionais
-Arquitetura Client-Server, utilizei o pacote `axios` para fazer a requisição ao servidor do Lumen, utilizei MySql como banco de dados
+Arquitetura Client-Server, utilizei o pacote `axios` para fazer a requisição ao servidor do Lumen, utilizei `MySql` como banco de dados
 
 ## Demonstração Inicial
 
