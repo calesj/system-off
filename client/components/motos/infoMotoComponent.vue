@@ -12,6 +12,7 @@
         </div>
         <div v-show="!loading">
           <v-card-actions>
+            <v-card-title>Informações da Moto</v-card-title>
             <v-spacer></v-spacer>
             <!--atualizar o valor da props dialog para false
             caso o usuario clique nesse botao, será emitido um evento ao elemento pai dizendo que o método closeDialog
@@ -20,7 +21,6 @@
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-actions>
-          <v-card-title>Informações da Moto</v-card-title>
           <v-card-text>
             <b>Imagem:</b>
             <v-img :src="moto.file_path"></v-img>
