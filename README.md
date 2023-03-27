@@ -7,9 +7,10 @@ Projeto feito com o intuito de testar todos meus conhecimentos
 * PHP
 * Nuxt.Js (Framework de Javascript)
 * Vue.js
+* MySql
 
 ## Informações adicionais
-Arquitetura Client-Server, utilizei o pacote `axios` para fazer a requisição ao servidor do Lumen
+Arquitetura Client-Server, utilizei o pacote `axios` para fazer a requisição ao servidor do Lumen, utilizei MySql como banco de dados
 
 ## Demonstração Inicial
 
